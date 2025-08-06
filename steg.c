@@ -16,7 +16,7 @@ void encrypt(unsigned char* imageData, long imageSize, char* insert, char* outfi
     
     FILE* wf = fopen(outfile, "wb");
     fwrite(imageData, sizeof(char), imageSize, wf);
-    free(imageData);
+    fclose(wf);
 }
 
 void decrypt(unsigned char* imageData, int offset){
@@ -38,8 +38,9 @@ void decrypt(unsigned char* imageData, int offset){
         int pointer = (i-offset)%8;
         if(pointer == 7) { printf("%c", *(pass+pos)); }
     }
-
     printf("\n");
+    free(len);
+    free(pass);
 }
 
 int main(int argc, char *argv[]){
@@ -81,9 +82,10 @@ int main(int argc, char *argv[]){
         *message = (char)strlen(argv[3]);
         strcpy(message+1, argv[3]);
         encrypt(imageData, imageSize, message, argv[5], 206);
+        free(message);
     }else if(strcmp(argv[2], "-d") == 0){
         decrypt(imageData, 206);
     }
-
+    free(imageData);
     return 0;
 }
